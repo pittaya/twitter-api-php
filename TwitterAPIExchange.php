@@ -158,6 +158,13 @@ class TwitterAPIExchange
                 $oauth[$split[0]] = $split[1];
             }
         }
+
+        $postfields = $this->getPostfields();
+        if (!is_null($postfields)) {
+            foreach ($postfields as $key => $value) {
+                $oauth[$key] = rawurlencode($value);
+            }
+        }
         
         $base_info = $this->buildBaseString($url, $requestMethod, $oauth);
         $composite_key = rawurlencode($consumer_secret) . '&' . rawurlencode($oauth_access_token_secret);
@@ -199,7 +206,7 @@ class TwitterAPIExchange
 
         if (!is_null($postfields))
         {
-            $options[CURLOPT_POSTFIELDS] = $postfields;
+            $options[CURLOPT_POSTFIELDS] = http_build_query($postfields);
         }
         else
         {
